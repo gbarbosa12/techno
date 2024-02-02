@@ -39,14 +39,6 @@ const vm = new Vue({
           this.produto = r;
         });
     },
-    adicionarItem() {
-      this.produto.estoque--;
-      const { id, nome, preco } = this.produto;
-      this.carrinho.push({ id, nome, preco });
-    },
-    removerItem(index) {
-      this.carrinho.splice(index, 1);
-    },
     abrirModal(id) {
       this.fetchProduto(id);
       window.scrollTo({
@@ -58,8 +50,28 @@ const vm = new Vue({
     fecharModal({ target, currentTarget }) {
       if (target === currentTarget) this.produto = false;
     },
+    adicionarItem() {
+      this.produto.estoque--;
+      const { id, nome, preco } = this.produto;
+      this.carrinho.push({ id, nome, preco });
+    },
+    removerItem(index) {
+      this.carrinho.splice(index, 1);
+    },
+
+    checarLocalStorage() {
+      if (window.localStorage.carrinho) {
+        this.carrinho = JSON.parse(window.localStorage.carrinho);
+      }
+    },
+  },
+  watch: {
+    carrinho() {
+      window.localStorage.carrinho = JSON.stringify(this.carrinho);
+    },
   },
   created() {
     this.fetchProdutos();
+    this.checarLocalStorage();
   },
 });
